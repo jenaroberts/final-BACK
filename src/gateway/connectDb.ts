@@ -6,3 +6,8 @@ export const getDb = async () => {
 
   return client.db();
 };
+
+export const getTasksCol = async () => {
+  const db = await getDb();
+  return db.collection("tasks");
+};
