@@ -1,8 +1,6 @@
-import { MatchKeysAndValues } from "mongodb";
-import { Key } from "readline";
-import { ClassElement } from "typescript";
 import { getDb } from "../gateway/connectDb";
 import { shuffle } from "../util";
+
 export interface Task {
   name: string;
   checked: boolean;
@@ -72,6 +70,11 @@ export const createPlan = async (
   for (const task of tasks) {
     const day = days[i];
     (plan[day] as Task[]).push({ name: task, checked: false });
+    if (i >= days.length) {
+      i = 0;
+    } else {
+      i++;
+    }
   }
   return plan;
 };

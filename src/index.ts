@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
 import cors from "cors";
-import express, { Router, Express } from "express";
+import express, { Router } from "express";
 import { Db } from "mongodb";
 import { TaskPlan } from "./services/tasks.services";
-
+import { getTasksCol, createPlan, getTasks } from "./services/tasks.services";
 export const taskRouter = Router();
 
 const app = express();
@@ -12,6 +12,11 @@ app.use(cors());
 app.use(taskRouter);
 app.listen(3000, () => {
   console.log("listening on port 3000");
+});
+
+taskRouter.post("/task", async (req, res) => {
+  const task = req.body;
+  const id = await createPlan();
 });
 
 //reset at midnight function
