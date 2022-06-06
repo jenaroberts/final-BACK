@@ -1,20 +1,21 @@
 import dotenv from "dotenv";
-
-import { Router } from "express";
+import cors from "cors";
+import express, { Router, Express } from "express";
 import { Db } from "mongodb";
-import { getTasksCol } from "./gateway/connectDb";
-import { Task } from "./services/tasks.services";
+import { TaskPlan } from "./services/tasks.services";
+
 export const taskRouter = Router();
 
-export const getTasks = async () => {
-  const col = await getTasksCol();
-  const allTasks = await col.find({}).toArray();
+const app = express();
+app.use(express.json());
+app.use(cors());
+app.use(taskRouter);
+app.listen(3000, () => {
+  console.log("listening on port 3000");
+});
 
-  return allTasks;
-};
-
-export const createTask = async (Task: string[]) => {
-  const col = await getTasksCol();
-  const { insertedId } = await col.insertOne(Task);
-  return insertedId;
+//reset at midnight function
+export const reset = async () => {
+  //wait until specific date and time to reset
+  //returns new task form
 };

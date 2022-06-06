@@ -1,4 +1,7 @@
 import { MongoClient } from "mongoDb";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const getDb = async () => {
   const client = new MongoClient(process.env.MONGO_URL!);
@@ -7,7 +10,5 @@ export const getDb = async () => {
   return client.db();
 };
 
-export const getTasksCol = async () => {
-  const db = await getDb();
-  return db.collection("tasks");
-};
+//connect to the db
+//connect to FB
