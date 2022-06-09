@@ -10,14 +10,14 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(taskRouter);
-app.listen(3000, () => {
-  console.log("listening on port 3000");
+app.listen(5050, () => {
+  console.log("listening on port 5050");
 });
 
-taskRouter.post("/task", async (req, res) => {
-  const task = req.body;
-  const id = await createPlan();
-});
+// taskRouter.post("/task", async (req, res) => {
+//   const task = req.body;
+//   const id = await createPlan(tasks, userId, habits, takesMeds);
+// });
 
 //reset at midnight function
 export const reset = async () => {
