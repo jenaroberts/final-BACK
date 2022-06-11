@@ -6,7 +6,7 @@ export interface Task {
   checked: boolean;
 }
 
-export interface TaskPlan {
+export interface Plan {
   m: Task[];
   t: Task[];
   w: Task[];
@@ -18,18 +18,19 @@ export interface TaskPlan {
   habits: string[];
   createdAt: Date;
   takesMeds: boolean;
+  isActive: boolean;
 }
 
-export const getTasksCol = async () => {
+export const getPlansCol = async () => {
   const db = await getDb();
-  return db.collection<TaskPlan>("tasks");
+  return db.collection<Plan>("plans");
 };
 
-export const getTasks = async (userId: string) => {
-  const col = await getTasksCol();
-  const allTasks = await col.find({ userId }).toArray();
+export const getPlan = async (userId: string) => {
+  const col = await getPlansCol();
+  const plans = await col.find({ userId, isActive: true }).toArray();
 
-  return allTasks;
+  return plans[0];
 };
 
 //your function is going to determine which tasks are done on which day at random
@@ -43,7 +44,7 @@ export const createPlan = async (
   habits: string[],
   takesMeds: boolean
 ) => {
-  const plan: TaskPlan = {
+  const plan: Plan = {
     m: [],
     t: [],
     w: [],
@@ -55,6 +56,7 @@ export const createPlan = async (
     habits,
     createdAt: new Date(),
     takesMeds,
+    isActive: true,
   };
   const days = shuffle([
     "m",
@@ -64,10 +66,10 @@ export const createPlan = async (
     "f",
     "sa",
     "su",
-  ]) as (keyof TaskPlan)[];
+  ]) as (keyof Plan)[];
   const shuffled = shuffle(tasks);
   let i = 0;
-  for (const task of tasks) {
+  for (const task of shuffled) {
     const day = days[i];
     (plan[day] as Task[]).push({ name: task, checked: false });
     if (i >= days.length) {
