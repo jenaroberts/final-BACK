@@ -32,18 +32,20 @@ const withAuthorization = async (
 app.use(express.json());
 app.use(cors());
 
-app.get("/task", withAuthorization, async (req, res) => {
-  const task = getPlansCol();
+app.get("/plan", withAuthorization, async (req, res) => {
+  const plan = getPlan(res.locals.userId);
+  res.send(plan);
 });
 
-app.post("/task", withAuthorization, async (req, res) => {
-  const task = req.body;
+app.post("/plan", withAuthorization, async (req, res) => {
+  const plan = req.body;
   const id = await createPlan(
-    task.tasks,
+    plan.tasks,
     res.locals.userId,
-    task.habits,
-    task.takesMeds
+    plan.habits,
+    plan.takesMeds
   );
+  res.status(200);
 });
 
 app.listen(5050, () => {
