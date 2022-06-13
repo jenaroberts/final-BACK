@@ -33,7 +33,7 @@ app.use(express.json());
 app.use(cors());
 
 app.get("/plan", withAuthorization, async (req, res) => {
-  const plan = getPlan(res.locals.userId);
+  const plan = await getPlan(res.locals.userId);
   res.send(plan);
 });
 
@@ -45,7 +45,7 @@ app.post("/plan", withAuthorization, async (req, res) => {
     plan.habits,
     plan.takesMeds
   );
-  res.status(200);
+  res.status(200).send();
 });
 
 app.listen(5050, () => {

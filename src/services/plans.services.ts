@@ -30,6 +30,8 @@ export const getPlan = async (userId: string) => {
   const col = await getPlansCol();
   const plans = await col.find({ userId, isActive: true }).toArray();
 
+  console.log(plans);
+
   return plans[0];
 };
 
@@ -44,6 +46,8 @@ export const createPlan = async (
   habits: string[],
   takesMeds: boolean
 ) => {
+  const col = await getPlansCol();
+
   const plan: Plan = {
     m: [],
     t: [],
@@ -78,5 +82,5 @@ export const createPlan = async (
       i++;
     }
   }
-  return plan;
+  await col.insertOne(plan);
 };
