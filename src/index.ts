@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import express, { Router } from "express";
 import { Db } from "mongodb";
-import { Plan } from "./services/plans.services";
+import { checkPlanHabit, Plan } from "./services/plans.services";
 import { getPlansCol, createPlan, getPlan } from "./services/plans.services";
 import { credentials } from "./credentials";
 import admin from "firebase-admin";
@@ -31,6 +31,11 @@ const withAuthorization = async (
 
 app.use(express.json());
 app.use(cors());
+
+app.post("/plan/habits", withAuthorization, async (req, res) => {
+  await checkPlanHabit(res.locals.userId, req.body.day, req.body.habitName);
+  res.status(200).send();
+});
 
 app.get("/plan", withAuthorization, async (req, res) => {
   const plan = await getPlan(res.locals.userId);

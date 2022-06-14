@@ -5,7 +5,16 @@ export interface Task {
   name: string;
   checked: boolean;
 }
-
+export interface PlanHabit {
+  name: string;
+  m: boolean;
+  t: boolean;
+  w: boolean;
+  th: boolean;
+  f: boolean;
+  sa: boolean;
+  su: boolean;
+}
 export interface Plan {
   m: Task[];
   t: Task[];
@@ -15,7 +24,7 @@ export interface Plan {
   sa: Task[];
   su: Task[];
   userId: string;
-  habits: string[];
+  habits: PlanHabit[];
   createdAt: Date;
   takesMeds: boolean;
   isActive: boolean;
@@ -28,7 +37,10 @@ export const getPlansCol = async () => {
 
 export const getPlan = async (userId: string) => {
   const col = await getPlansCol();
-  const plans = await col.find({ userId, isActive: true }).toArray();
+  const plans = await col
+    .find({ userId, isActive: true })
+    .sort({ createdAt: -1 })
+    .toArray();
 
   console.log(plans);
 
@@ -57,7 +69,18 @@ export const createPlan = async (
     sa: [],
     su: [],
     userId,
-    habits,
+    habits: habits.map((habit) => {
+      return {
+        name: habit,
+        m: false,
+        t: false,
+        w: false,
+        th: false,
+        f: false,
+        sa: false,
+        su: false,
+      };
+    }),
     createdAt: new Date(),
     takesMeds,
     isActive: true,
@@ -75,12 +98,26 @@ export const createPlan = async (
   let i = 0;
   for (const task of shuffled) {
     const day = days[i];
+    console.log(plan);
+    console.log(day);
     (plan[day] as Task[]).push({ name: task, checked: false });
-    if (i >= days.length) {
+    if (i >= days.length - 1) {
       i = 0;
     } else {
       i++;
     }
   }
   await col.insertOne(plan);
+};
+
+export const checkPlanHabit = async (
+  userId: string,
+  day: string,
+  habitName: string
+) => {
+  const plan = await getPlan(userId);
+  const col = await getPlansCol();
+  const habit = plan.habits.find((habit) => habit.name === habitName)!;
+  (habit as any)[day] = true;
+  await col.updateOne({ _id: plan._id }, plan);
 };
