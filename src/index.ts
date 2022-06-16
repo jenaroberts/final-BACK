@@ -6,6 +6,7 @@ import { checkPlanHabit, checkTasks, Plan } from "./services/plans.services";
 import { getPlansCol, createPlan, getPlan } from "./services/plans.services";
 import { credentials } from "./credentials";
 import admin from "firebase-admin";
+import * as functions from "firebase-functions";
 
 const app = express();
 
@@ -61,6 +62,7 @@ app.post("/plan/tasks", withAuthorization, async (req, res) => {
   res.status(200).send(plan);
 });
 
-app.listen(5050, () => {
-  console.log("listening on port 5050");
-});
+// app.listen(5050, () => {
+//   console.log("listening on port 5050");
+// });
+export const rest = functions.https.onRequest(app);

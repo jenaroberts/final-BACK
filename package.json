@@ -4,8 +4,10 @@
     "@types/node": "^17.0.40",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
+    "esbuild": "^0.14.44",
     "express": "^4.18.1",
     "firebase-admin": "^10.3.0",
+    "firebase-functions": "^3.21.2",
     "mongodb": "^4.6.0",
     "nodemon": "^2.0.16",
     "ts-node": "^10.8.1",
@@ -13,5 +15,10 @@
   },
   "devDependencies": {
     "@types/cors": "^2.8.12"
+  },
+  "scripts": {
+    "start": "npx nodemon src/index.ts",
+    "build": "npx esbuild src/index.ts --bundle --platform=node --target=node16 --outfile=dist/app.js && cp build.package.json dist/package.json && cp .env dist/.env",
+    "deploy": "firebase deploy"
   }
 }
