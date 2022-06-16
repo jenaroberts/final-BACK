@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import express, { Router } from "express";
 import { Db } from "mongodb";
-import { checkPlanHabit, Plan } from "./services/plans.services";
+import { checkPlanHabit, checkTasks, Plan } from "./services/plans.services";
 import { getPlansCol, createPlan, getPlan } from "./services/plans.services";
 import { credentials } from "./credentials";
 import admin from "firebase-admin";
@@ -33,8 +33,12 @@ app.use(express.json());
 app.use(cors());
 
 app.post("/plan/habits", withAuthorization, async (req, res) => {
-  await checkPlanHabit(res.locals.userId, req.body.day, req.body.habitName);
-  res.status(200).send();
+  const plan = await checkPlanHabit(
+    res.locals.userId,
+    req.body.day,
+    req.body.habitName
+  );
+  res.status(200).send(plan);
 });
 
 app.get("/plan", withAuthorization, async (req, res) => {
@@ -52,13 +56,11 @@ app.post("/plan", withAuthorization, async (req, res) => {
   );
   res.status(200).send();
 });
+app.post("/plan/tasks", withAuthorization, async (req, res) => {
+  const plan = await checkTasks(res.locals.userId, req.body.name, req.body.day);
+  res.status(200).send(plan);
+});
 
 app.listen(5050, () => {
   console.log("listening on port 5050");
 });
-
-//reset at midnight function
-export const reset = async () => {
-  //wait until specific date and time to reset
-  //returns new task form
-};

@@ -118,6 +118,16 @@ export const checkPlanHabit = async (
   const plan = await getPlan(userId);
   const col = await getPlansCol();
   const habit = plan.habits.find((habit) => habit.name === habitName)!;
-  (habit as any)[day] = true;
-  await col.updateOne({ _id: plan._id }, plan);
+  (habit as any)[day] = !(habit as any)[day];
+  await col.updateOne({ _id: plan._id }, { $set: plan });
+  return plan;
+};
+
+export const checkTasks = async (userId: string, name: string, day: string) => {
+  const plan = await getPlan(userId);
+  const col = await getPlansCol();
+  const task = (plan as any)[day].find((task: any) => task.name === name);
+  task.checked = !task.checked;
+  await col.updateOne({ _id: plan._id }, { $set: plan });
+  return plan;
 };

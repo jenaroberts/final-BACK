@@ -9,6 +9,3 @@ export const getDb = async () => {
 
   return client.db("neuro-adult");
 };
-
-//connect to the db
-//connect to FB
